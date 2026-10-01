@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ledger — AI Quality &amp; Compliance Intelligence Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">§</span>
+      <div class="brand-text">
+        <span class="brand-name">Ledger</span>
+        <span class="brand-sub">Compliance Intelligence</span>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item is-active" data-view="dashboard">
+        <span class="nav-index">01</span> Dashboard
+      </button>
+      <button class="nav-item" data-view="policies">
+        <span class="nav-index">02</span> Policy Library
+      </button>
+      <button class="nav-item" data-view="documents">
+        <span class="nav-index">03</span> Documents
+      </button>
+      <button class="nav-item" data-view="reports">
+        <span class="nav-index">04</span> Risk Reports
+      </button>
+      <button class="nav-item" data-view="ask">
+        <span class="nav-index">05</span> Ask the Agent
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="status-row">
+        <span class="status-dot" id="apiStatusDot"></span>
+        <span id="apiStatusText">Checking backend…</span>
+      </div>
+      <p class="pipeline-caption">
+        Document Processing → RAG → Policy Analysis → Compliance Reasoning → Risk Report
+      </p>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+
+    <!-- ---------- DASHBOARD ---------- -->
+    <section class="view is-active" id="view-dashboard">
+      <header class="view-header">
+        <h1>Continuous compliance, read at a glance.</h1>
+        <p class="view-lede">
+          This agent retrieves your policies, ISO clauses and SOPs, then reasons
+          over each process document you upload to surface gaps before an
+          auditor does.
+        </p>
+      </header>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <span class="stat-label">Policy corpus</span>
+          <span class="stat-value" id="statPolicyCount">0</span>
+          <span class="stat-unit">documents indexed</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Documents under review</span>
+          <span class="stat-value" id="statDocCount">0</span>
+          <span class="stat-unit">uploaded</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Reports generated</span>
+          <span class="stat-value" id="statReportCount">0</span>
+          <span class="stat-unit">risk assessments</span>
+        </div>
+        <div class="stat-card stat-card--risk">
+          <span class="stat-label">Latest risk level</span>
+          <span class="stat-value" id="statLatestRisk">—</span>
+          <span class="stat-unit" id="statLatestDoc">no reports yet</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Recent risk reports</h2>
+        </div>
+        <div id="dashboardReports" class="report-list report-list--compact">
+          <p class="empty-note">No reports yet. Upload a policy set and a document, then run an analysis.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- POLICY LIBRARY ---------- -->
+    <section class="view" id="view-policies">
+      <header class="view-header">
+        <h1>Policy Library</h1>
+        <p class="view-lede">
+          Upload internal policies, ISO clauses, SOPs and regulatory
+          requirements. These are embedded into the vector store and retrieved
+          during every compliance check.
+        </p>
+      </header>
+
+      <div class="uploader" id="policyUploader" data-kind="policy">
+        <input type="file" id="policyFileInput" accept=".pdf,.docx,.txt,.md" hidden />
+        <div class="uploader-icon">＋</div>
+        <p><strong>Drop a policy file here</strong> or click to browse</p>
+        <p class="uploader-hint">PDF, DOCX, TXT, or MD</p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>Indexed policy documents</h2></div>
+        <table class="file-table" id="policyTable">
+          <thead>
+            <tr><th>Filename</th><th>Chunks</th><th>Uploaded</th><th></th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <p class="empty-note" id="policyEmptyNote">No policy documents indexed yet.</p>
+      </div>
+    </section>
+
+    <!-- ---------- DOCUMENTS ---------- -->
+    <section class="view" id="view-documents">
+      <header class="view-header">
+        <h1>Documents Under Review</h1>
+        <p class="view-lede">
+          Upload the company process, procedure or record you want checked
+          against the policy library, then run compliance reasoning on it.
+        </p>
+      </header>
+
+      <div class="uploader" id="documentUploader" data-kind="document">
+        <input type="file" id="documentFileInput" accept=".pdf,.docx,.txt,.md" hidden />
+        <div class="uploader-icon">＋</div>
+        <p><strong>Drop a document here</strong> or click to browse</p>
+        <p class="uploader-hint">PDF, DOCX, TXT, or MD</p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>Uploaded documents</h2></div>
+        <table class="file-table" id="documentTable">
+          <thead>
+            <tr><th>Filename</th><th>Chunks</th><th>Uploaded</th><th></th><th></th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <p class="empty-note" id="documentEmptyNote">No documents uploaded yet.</p>
+      </div>
+
+      <!-- Analyze modal -->
+      <div class="modal-backdrop" id="analyzeModalBackdrop">
+        <div class="modal">
+          <div class="modal-head">
+            <h3>Run compliance analysis</h3>
+            <button class="modal-close" id="analyzeModalClose">×</button>
+          </div>
+          <p class="modal-doc-name" id="analyzeModalDocName"></p>
+          <label class="field-label" for="focusQueryInput">Focus area (optional)</label>
+          <input type="text" id="focusQueryInput" class="text-input"
+                 placeholder="e.g. data retention, supplier qualification, calibration records" />
+          <button class="btn btn--primary" id="runAnalysisBtn">
+            <span id="runAnalysisBtnText">Run analysis</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- REPORTS ---------- -->
+    <section class="view" id="view-reports">
+      <header class="view-header">
+        <h1>Risk Reports</h1>
+        <p class="view-lede">Every compliance run is kept here as an auditable record.</p>
+      </header>
+
+      <div class="reports-layout">
+        <div class="panel reports-list-panel">
+          <div class="panel-head"><h2>All reports</h2></div>
+          <div id="reportsList" class="report-list"></div>
+          <p class="empty-note" id="reportsEmptyNote">No reports yet.</p>
+        </div>
+
+        <div class="panel report-detail-panel" id="reportDetailPanel">
+          <p class="empty-note">Select a report from the list to view its findings.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- ASK ---------- -->
+    <section class="view" id="view-ask">
+      <header class="view-header">
+        <h1>Ask the Agent</h1>
+        <p class="view-lede">
+          Quick lookups against your policy corpus without running a full
+          report — e.g. "what does our SOP say about equipment calibration
+          intervals?"
+        </p>
+      </header>
+
+      <div class="panel ask-panel">
+        <label class="field-label" for="askDocSelect">Scope to a specific document (optional)</label>
+        <select id="askDocSelect" class="text-input">
+          <option value="">Policy library only</option>
+        </select>
+
+        <label class="field-label" for="askQuestionInput">Your question</label>
+        <textarea id="askQuestionInput" class="text-input textarea"
+          placeholder="e.g. Does our onboarding SOP satisfy ISO 9001 clause 7.2 on competence?"></textarea>
+
+        <button class="btn btn--primary" id="askBtn"><span id="askBtnText">Ask</span></button>
+
+        <div class="ask-answer" id="askAnswer"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
